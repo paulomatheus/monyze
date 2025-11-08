@@ -4,19 +4,40 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeApp();
 });
 
-function initializeApp() {
-  document.getElementById('date').valueAsDate = new Date();
-  document.getElementById('btn-add').addEventListener('click', openModal);
-  document.querySelector('.close').addEventListener('click', closeModal);
-  document.getElementById('form-transaction').addEventListener('submit', saveTransaction); 
-  document.getElementById('modal').addEventListener('click', (e) => {
-    if (e.target.id === 'modal') {
-      closeModal();
-    }
-  });
-  
+async function initializeApp() {
+  try {
+    await expensesDB.init();
+    await loadTransactions();
+    
+    document.getElementById('date').valueAsDate = new Date();
+    
+    document.getElementById('btn-add').addEventListener('click', openModal);
+    document.querySelector('.close').addEventListener('click', closeModal);
+    document.getElementById('form-transaction').addEventListener('submit', saveTransaction);
+    
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.id === 'modal') {
+        closeModal();
+      }
+    });
+    
+    render();
+    
+    console.log('✅ App initialized successfully!');
+  } catch (error) {
+    console.error('❌ Error initializing app:', error);
+    alert('Error initializing the application. Please reload the page.');
+  }
+}
 
-  render();
+async function loadTransactions() {
+  try {
+    transactions = await expensesDB.getAll();
+    console.log(`📊 ${transactions.length} transactions loaded`);
+  } catch (error) {
+    console.error('❌ Error loading transactions:', error);
+    transactions = [];
+  }
 }
 
 
@@ -30,7 +51,7 @@ function closeModal() {
   document.getElementById('modal').classList.remove('show');
 }
 
-function saveTransaction(event) {
+async function saveTransaction(event) {
   event.preventDefault();
   
   const type = document.querySelector('input[name="type"]:checked').value;
@@ -40,7 +61,6 @@ function saveTransaction(event) {
   const date = document.getElementById('date').value;
   
   const transaction = {
-    id: Date.now(), 
     type,
     description,
     amount,
@@ -49,16 +69,28 @@ function saveTransaction(event) {
     timestamp: Date.now()
   };
   
-  transactions.push(transaction);
-  
-  closeModal();
-  render();
+  try {
+    const id = await expensesDB.add(transaction);
+    transaction.id = id;
+    transactions.push(transaction);
+    closeModal();
+    render();
+  } catch (error) {
+    console.error('❌ Error saving transaction:', error);
+    alert('Error saving transaction. Please try again.');
+  }
 }
 
-function deleteTransaction(id) {
-  if (confirm('Tem certeza que deseja excluir esta transação?')) {
-    transactions = transactions.filter(t => t.id !== id);
-    render();
+async function deleteTransaction(id) {
+  if (confirm('Are you sure you want to delete this transaction?')) {
+    try {
+      await expensesDB.delete(id);
+      transactions = transactions.filter(t => t.id !== id);
+      render();
+    } catch (error) {
+      console.error('❌ Error deleting transaction:', error);
+      alert('Error deleting transaction. Please try again.');
+    }
   }
 }
 
