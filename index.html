@@ -38,7 +38,61 @@
     </section>
   </main>
 
- 
+ <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Nova Transação</h2>
+      
+      <form id="form-transaction">
+        <div class="form-group">
+          <label>Tipo:</label>
+          <div class="radio-group">
+            <label>
+              <input type="radio" name="type" value="income" checked>
+              Receita
+            </label>
+            <label>
+              <input type="radio" name="type" value="expense">
+              Despesa
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Descrição:</label>
+          <input type="text" id="description" required>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Valor:</label>
+          <input type="number" id="amount" step="0.01" min="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Categoria:</label>
+          <select id="category" required>
+            <option value="">Selecione...</option>
+            <option value="Alimentação">Alimentação</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Moradia">Moradia</option>
+            <option value="Saúde">Saúde</option>
+            <option value="Lazer">Lazer</option>
+            <option value="Educação">Educação</option>
+            <option value="Salário">Salário</option>
+            <option value="Freelance">Freelance</option>
+            <option value="Outros">Outros</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Data:</label>
+          <input type="date" id="date" required>
+        </div>
+
+        <button type="submit" class="btn-primary">Salvar</button>
+      </form>
+    </div>
+  </div>
   
 
 </body>
