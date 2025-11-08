@@ -247,4 +247,18 @@ main {
   padding: 40px;
 }
 
+@media (max-width: 600px) {
+  .summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .transaction-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .item-amount {
+    margin: 10px 0;
+  }
+}
 
