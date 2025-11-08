@@ -108,6 +108,24 @@ class ExpensesDB {
       };
     });
   }
+  
+  async delete(id) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction([this.STORE_NAME], 'readwrite');
+      const store = tx.objectStore(this.STORE_NAME);
+      const request = store.delete(id);
+      
+      request.onsuccess = () => {
+        console.log('✅ Transaction deleted');
+        resolve();
+      };
+      
+      request.onerror = () => {
+        console.error('❌ Error deleting:', request.error);
+        reject(request.error);
+      };
+    });
+  }
 
 }
 
