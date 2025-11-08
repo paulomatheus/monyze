@@ -1,11 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MONYZE</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monyze</title>
 </head>
 <body>
-    
+  <header>
+    <h1>MONYZE</h1>
+    <h2>💰 Controle de Gastos</h2>
+  </header>
+
+  <main>
+    <section class="summary">
+      <div class="card income">
+        <h3>Receitas</h3>
+        <p id="total-income">R$ 0,00</p>
+      </div>
+      <div class="card expenses">
+        <h3>Despesas</h3>
+        <p id="total-expenses">R$ 0,00</p>
+      </div>
+      <div class="card balance">
+        <h3>Saldo</h3>
+        <p id="total-balance">R$ 0,00</p>
+      </div>
+    </section>
+
+    <section class="actions">
+      <button id="btn-add" class="btn-primary">+ Nova Transação</button>
+    </section>
+
+    <section class="transactions">
+      <h2>Histórico</h2>
+      <div id="transaction-list">
+      </div>
+    </section>
+  </main>
+
+ 
+  
+
 </body>
 </html>
