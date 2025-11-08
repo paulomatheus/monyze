@@ -90,8 +90,25 @@ class ExpensesDB {
       };
     });
   }
-
   
+    async update(transaction) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction([this.STORE_NAME], 'readwrite');
+      const store = tx.objectStore(this.STORE_NAME);
+      const request = store.put(transaction);
+      
+      request.onsuccess = () => {
+        console.log('✅ Transaction updated');
+        resolve(request.result);
+      };
+      
+      request.onerror = () => {
+        console.error('❌ Error updating:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
 }
 
 const expensesDB = new ExpensesDB();
