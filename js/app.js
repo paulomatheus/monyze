@@ -70,13 +70,12 @@ async function saveTransaction(event) {
   };
   
   try {
-    const id = await expensesDB.add(transaction);
-    transaction.id = id;
-    transactions.push(transaction);
+    await expensesDB.add(transaction);
+    await loadTransactions();
     closeModal();
     render();
   } catch (error) {
-    console.error('❌ Error saving transaction:', error);
+    console.error('❌ Error saving:', error);
     alert('Error saving transaction. Please try again.');
   }
 }
@@ -85,11 +84,11 @@ async function deleteTransaction(id) {
   if (confirm('Are you sure you want to delete this transaction?')) {
     try {
       await expensesDB.delete(id);
-      transactions = transactions.filter(t => t.id !== id);
+      await loadTransactions();
       render();
     } catch (error) {
-      console.error('❌ Error deleting transaction:', error);
-      alert('Error deleting transaction. Please try again.');
+      console.error('❌ Error deleting:', error);
+      alert('Error deleting transaction.');
     }
   }
 }
