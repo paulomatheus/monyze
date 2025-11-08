@@ -127,6 +127,40 @@ class ExpensesDB {
     });
   }
 
+  
+  async getByType(type) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction([this.STORE_NAME], 'readonly');
+      const store = tx.objectStore(this.STORE_NAME);
+      const index = store.index('type');
+      const request = index.getAll(type);
+      
+      request.onsuccess = () => {
+        resolve(request.result);
+      };
+      
+      request.onerror = () => {
+        reject(request.error);
+      };
+    });
+  }
+
+  async clearAll() {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction([this.STORE_NAME], 'readwrite');
+      const store = tx.objectStore(this.STORE_NAME);
+      const request = store.clear();
+      
+      request.onsuccess = () => {
+        console.log('✅ All data cleared');
+        resolve();
+      };
+      
+      request.onerror = () => {
+        reject(request.error);
+      };
+    });
+  }
 }
 
 const expensesDB = new ExpensesDB();
