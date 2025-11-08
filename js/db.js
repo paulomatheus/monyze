@@ -58,6 +58,39 @@ class ExpensesDB {
     });
   }
 
+  async getAll() {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction([this.STORE_NAME], 'readonly');
+      const store = tx.objectStore(this.STORE_NAME);
+      const request = store.getAll();
+      
+      request.onsuccess = () => {
+        resolve(request.result);
+      };
+      
+      request.onerror = () => {
+        console.error('❌ Error listing:', request.error);
+        reject(request.error);
+      };
+    });
+  }
+
+  async getById(id) {
+    return new Promise((resolve, reject) => {
+      const tx = this.db.transaction([this.STORE_NAME], 'readonly');
+      const store = tx.objectStore(this.STORE_NAME);
+      const request = store.get(id);
+      
+      request.onsuccess = () => {
+        resolve(request.result);
+      };
+      
+      request.onerror = () => {
+        reject(request.error);
+      };
+    });
+  }
+
   
 }
 
