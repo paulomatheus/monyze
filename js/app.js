@@ -7,8 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initializeApp() {
   try {
     await expensesDB.init();
+    await registerServiceWorker();
     await loadTransactions();
     
+
     document.getElementById('date').valueAsDate = new Date();
     
     document.getElementById('btn-add').addEventListener('click', openModal);
@@ -27,6 +29,33 @@ async function initializeApp() {
   } catch (error) {
     console.error('❌ Error initializing app:', error);
     alert('Error initializing the application. Please reload the page.');
+  }
+}
+
+async function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register('/service-worker.js');
+      console.log('✅ Service Worker registered:', registration.scope);
+      
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        console.log('🔄 New Service Worker version found');
+        
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'activated') {
+            console.log('✅ New version activated');
+            if (confirm('New version available! Reload page?')) {
+              window.location.reload();
+            }
+          }
+        });
+      });
+    } catch (error) {
+      console.error('❌ Error registering Service Worker:', error);
+    }
+  } else {
+    console.warn('⚠️ Service Workers not supported in this browser');
   }
 }
 
@@ -128,14 +157,14 @@ function renderList() {
   list.innerHTML = sortedTransactions.map(t => `
     <div class="transaction-item ${t.type}">
       <div class="item-info">
-        <div class="descricao">${t.description}</div>
-        <div class="detalhes">${t.category} • ${formatDate(t.date)}</div>
+        <div class="description">${t.description}</div>
+        <div class="details">${t.category} • ${formatDate(t.date)}</div>
       </div>
       <div class="item-amount ${t.type}">
         ${t.type === 'income' ? '+' : '-'} ${formatCurrency(t.amount)}
       </div>
       <div class="item-actions">
-        <button onclick="deleteTransaction(${t.id})" title="Excluir">🗑️</button>
+        <button onclick="deleteTransaction(${t.id})" title="Delete">🗑️</button>
       </div>
     </div>
   `).join('');
@@ -151,3 +180,4 @@ function formatCurrency(value) {
 function formatDate(date) {
   return new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
 }
+
