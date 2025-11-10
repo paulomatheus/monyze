@@ -147,7 +147,7 @@ function renderList() {
   const list = document.getElementById('transaction-list');
   
   if (transactions.length === 0) {
-    list.innerHTML = '<div class="empty-message">Nenhuma transação cadastrada</div>';
+    list.innerHTML = '<div class="empty-message">No transactions registered</div>';
     return;
   }
   
@@ -181,3 +181,27 @@ function formatDate(date) {
   return new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
 }
 
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  const btnInstall = document.getElementById('btn-install');
+  btnInstall.classList.remove('hidden');
+  
+  btnInstall.addEventListener('click', async () => {
+    deferredPrompt.prompt();
+    
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User ${outcome === 'accepted' ? 'accepted' : 'rejected'} the installation`);
+    
+    deferredPrompt = null;
+    btnInstall.classList.add('hidden');
+  });
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('✅ PWA installed successfully!');
+  deferredPrompt = null;
+});

@@ -129,12 +129,12 @@ main {
   flex: 1;
 }
 
-.item-info .descricao {
+.item-info .description {
   font-weight: bold;
   margin-bottom: 5px;
 }
 
-.item-info .detalhes {
+.item-info .details {
   font-size: 0.85rem;
   color: #666;
 }
@@ -262,3 +262,19 @@ main {
   }
 }
 
+.btn-install {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  transition: all 0.3s;
+}
+
+.btn-install:hover {
+  background: white;
+  color: #667eea;
+}
