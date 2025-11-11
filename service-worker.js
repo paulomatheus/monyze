@@ -1,13 +1,13 @@
 const CACHE_NAME = 'expenses-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/app.js',
-  '/js/db.js',
-  '/images/icon-128.png',
-  '/images/icon-512.png',
-  '/manifest.json'
+  './',
+  './index.html',
+  './css/style.css',
+  './js/app.js',
+  './js/db.js',
+  './images/icon-128.png',
+  './images/icon-512.png',
+  './manifest.json'
 ];
 
 self.addEventListener('install', event => {
