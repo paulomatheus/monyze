@@ -369,6 +369,14 @@ main {
   opacity: 1;
 }
 
+.item-actions button:first-child {
+  color: #2196F3;
+}
+
+.item-actions button:last-child {
+  color: #f44336;
+}
+
 .modal {
   display: none;
   position: fixed;
