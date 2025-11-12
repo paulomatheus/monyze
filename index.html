@@ -16,11 +16,59 @@
   <link rel="apple-touch-icon" href="images/icon-128.png">
 </head>
 <body>
-  <header>
+  <header class="app-header">
+    <button class="menu-toggle" id="menu-toggle">
+      <span class="hamburger"></span>
+    </button>
     <h1>MONYZE</h1>
-    <h2>💰 Controle de Gastos</h2>
-    <button id="btn-install" class="btn-install hidden">📱 Instalar App</button>
+    <button id="btn-install" class="btn-install hidden">📱</button>
   </header>
+
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+
+  <nav class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h2>💰 Menu</h2>
+      <button class="drawer-close" id="drawer-close">&times;</button>
+    </div>
+    
+    <ul class="drawer-menu">
+      <li>
+        <a href="#" data-page="home" class="drawer-item active">
+          <span class="icon">📈</span>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-page="reports" class="drawer-item">
+          <span class="icon">📊</span>
+          <span>Relatórios</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-page="categories" class="drawer-item">
+          <span class="icon">🏷️</span>
+          <span>Categorias</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-page="settings" class="drawer-item">
+          <span class="icon">⚙️</span>
+          <span>Configurações</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" data-page="about" class="drawer-item">
+          <span class="icon">ℹ️</span>
+          <span>Sobre</span>
+        </a>
+      </li>
+    </ul>
+    
+    <div class="drawer-footer">
+      <small>Monyze v1.0</small>
+    </div>
+  </nav>
 
   <main>
     <section class="summary">
@@ -44,12 +92,11 @@
 
     <section class="transactions">
       <h2>Histórico</h2>
-      <div id="transaction-list">
-      </div>
+      <div id="transaction-list"></div>
     </section>
   </main>
 
- <div id="modal" class="modal hidden">
+  <div id="modal" class="modal hidden">
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Nova Transação</h2>
@@ -104,7 +151,4 @@
       </form>
     </div>
   </div>
-  
-
 </body>
-</html>

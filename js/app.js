@@ -10,7 +10,7 @@ async function initializeApp() {
     await registerServiceWorker();
     await loadTransactions();
     
-
+    initializeDrawer();
     document.getElementById('date').valueAsDate = new Date();
     
     document.getElementById('btn-add').addEventListener('click', openModal);
@@ -179,6 +179,57 @@ function formatCurrency(value) {
 
 function formatDate(date) {
   return new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
+}
+
+function initializeDrawer() {
+  const menuToggle = document.getElementById('menu-toggle');
+  const drawer = document.getElementById('drawer');
+  const drawerOverlay = document.getElementById('drawer-overlay');
+  const drawerClose = document.getElementById('drawer-close');
+  const drawerItems = document.querySelectorAll('.drawer-item');
+  
+  
+  function openDrawer() {
+    drawer.classList.add('active');
+    drawerOverlay.classList.add('active');
+    menuToggle.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  
+  function closeDrawer() {
+    drawer.classList.remove('active');
+    drawerOverlay.classList.remove('active');
+    menuToggle.classList.remove('active');
+    document.body.style.overflow = ''; 
+  }
+  
+  menuToggle.addEventListener('click', () => {
+    if (drawer.classList.contains('active')) {
+      closeDrawer();
+    } else {
+      openDrawer();
+    }
+  });
+  
+  drawerClose.addEventListener('click', closeDrawer);
+  drawerOverlay.addEventListener('click', closeDrawer);
+  
+ 
+  drawerItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      drawerItems.forEach(i => i.classList.remove('active'));
+      
+      item.classList.add('active');
+      
+      const page = item.dataset.page;
+      console.log('Navegando para:', page);
+      
+      closeDrawer();
+    });
+  });
 }
 
 let deferredPrompt;
