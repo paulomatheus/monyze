@@ -11,6 +11,8 @@ async function initializeApp() {
     await loadTransactions();
     
     initializeDrawer();
+    initializeBottomNav();
+
     document.getElementById('date').valueAsDate = new Date();
     
     document.getElementById('btn-add').addEventListener('click', openModal);
@@ -188,7 +190,6 @@ function initializeDrawer() {
   const drawerClose = document.getElementById('drawer-close');
   const drawerItems = document.querySelectorAll('.drawer-item');
   
-  
   function openDrawer() {
     drawer.classList.add('active');
     drawerOverlay.classList.add('active');
@@ -196,12 +197,11 @@ function initializeDrawer() {
     document.body.style.overflow = 'hidden';
   }
   
-  
   function closeDrawer() {
     drawer.classList.remove('active');
     drawerOverlay.classList.remove('active');
     menuToggle.classList.remove('active');
-    document.body.style.overflow = ''; 
+    document.body.style.overflow = '';
   }
   
   menuToggle.addEventListener('click', () => {
@@ -215,21 +215,52 @@ function initializeDrawer() {
   drawerClose.addEventListener('click', closeDrawer);
   drawerOverlay.addEventListener('click', closeDrawer);
   
- 
   drawerItems.forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
-      
       drawerItems.forEach(i => i.classList.remove('active'));
-      
       item.classList.add('active');
-      
       const page = item.dataset.page;
-      console.log('Navegando para:', page);
-      
+      console.log('Navigating to:', page);
       closeDrawer();
     });
   });
+}
+
+function initializeBottomNav() {
+  const navItems = document.querySelectorAll('.nav-item');
+  const navAdd = document.getElementById('nav-add');
+  
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const page = item.dataset.page;
+      
+      if (page === 'add') {
+        openModal();
+        return;
+      }
+      
+      navItems.forEach(i => i.classList.remove('active'));      
+      item.classList.add('active');
+      navigateToPage(page);
+    });
+  });
+}
+
+function navigateToPage(page) {
+  console.log('🔄 Navigating to page:', page);
+  
+  switch(page) {
+    case 'home':
+      console.log('📈 Showing Dashboard');
+      break;
+    case 'history':
+      console.log('📋 Showing History');
+      break;
+    case 'reports':
+      console.log('📊 Showing Reports');
+      break;
+  }
 }
 
 let deferredPrompt;
