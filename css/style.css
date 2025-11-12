@@ -4,6 +4,14 @@
   box-sizing: border-box;
 }
 
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  padding-top: 80px;
+}
+
 .app-header {
   position: fixed;
   top: 0;
@@ -24,10 +32,6 @@
   font-size: 1.5rem;
   margin: 0;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-}
-
-body {
-  padding-top: 60px;
 }
 
 .menu-toggle {
@@ -53,6 +57,7 @@ body {
 
 .hamburger {
   position: relative;
+  display: block;
 }
 
 .hamburger::before,
@@ -82,23 +87,6 @@ body {
 .menu-toggle.active .hamburger::after {
   top: 0;
   transform: rotate(-45deg);
-}
-
-
-header {
-  text-align: center;
-  color: white;
-  margin-bottom: 30px;
-}
-
-header h1 {
-  font-size: 2rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-}
-
-main {
-  max-width: 800px;
-  margin: 0 auto;
 }
 
 .drawer-overlay {
@@ -220,11 +208,9 @@ main {
 }
 
 main {
+  max-width: 800px;
+  margin: 0 auto;
   padding-bottom: 80px;
-}
-
-header.old-header {
-  display: none;
 }
 
 .summary {
@@ -286,6 +272,22 @@ header.old-header {
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+}
+
+.btn-install {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.3s;
+}
+
+.btn-install:hover {
+  background: white;
+  color: #667eea;
 }
 
 .transactions {
@@ -434,10 +436,11 @@ header.old-header {
   display: flex;
   align-items: center;
   gap: 5px;
+  font-weight: normal;
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .empty-message {
@@ -459,21 +462,4 @@ header.old-header {
   .item-amount {
     margin: 10px 0;
   }
-}
-
-.btn-install {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid white;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  margin-top: 10px;
-  transition: all 0.3s;
-}
-
-.btn-install:hover {
-  background: white;
-  color: #667eea;
 }
