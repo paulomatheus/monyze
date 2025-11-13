@@ -1,4 +1,4 @@
-const CACHE_NAME = 'expenses-v7';
+const CACHE_NAME = 'expenses-v8';
 const urlsToCache = [
   './',
   './index.html',
@@ -7,7 +7,8 @@ const urlsToCache = [
   './js/db.js',
   './images/icon-128.png',
   './images/icon-512.png',
-  './manifest.json'
+  './manifest.json',
+  'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js'
 ];
 
 self.addEventListener('install', event => {

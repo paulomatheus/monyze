@@ -253,6 +253,47 @@ main {
   color: #2196F3;
 }
 
+.chart-section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.chart-section h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+.chart-empty-message {
+  text-align: center;
+  color: #999;
+  padding: 60px 20px;
+  font-size: 1rem;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .chart-container {
+    height: 250px;
+  }
+}
+
+@media (min-width: 768px) {
+  .chart-container {
+    height: 350px;
+  }
+}
+
 .actions {
   text-align: center;
   margin-bottom: 30px;

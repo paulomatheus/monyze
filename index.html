@@ -14,6 +14,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Expenses">
   <link rel="apple-touch-icon" href="images/icon-128.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <header class="app-header">
@@ -86,6 +87,16 @@
       </div>
     </section>
 
+     <section class="chart-section">
+      <h2>📊 Expenses by Category</h2>
+      <div class="chart-container">
+        <canvas id="expenses-chart"></canvas>
+      </div>
+      <div id="chart-empty-message" class="chart-empty-message hidden">
+        No expense data to display
+      </div>
+    </section>
+    
     <section class="actions">
       <button id="btn-add" class="btn-primary">+ Nova Transação</button>
     </section>

@@ -1,6 +1,7 @@
 let transactions = [];
 let editingTransactionId = null; 
 let isEditMode = false;
+let expensesChart = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   initializeApp();
@@ -14,6 +15,7 @@ async function initializeApp() {
 
     initializeDrawer();
     initializeBottomNav();
+    initializeChart();
 
     document.getElementById('date').valueAsDate = new Date();
 
@@ -184,6 +186,7 @@ async function editTransaction(id) {
 function render() {
   renderSummary();
   renderList();
+  updateChart();
 }
 
 function renderSummary() {
@@ -320,6 +323,142 @@ function navigateToPage(page) {
       console.log('📊 Showing Reports');
       break;
   }
+}
+
+// ========================================
+// CHART (Bar Chart)
+// ========================================
+function initializeChart() {
+  const ctx = document.getElementById('expenses-chart');
+  
+  if (!ctx) {
+    console.error('❌ Chart canvas not found');
+    return;
+  }
+  
+  // Configuração do gráfico
+  expensesChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Expenses by Category (R$)',
+        data: [],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.7)',   // Vermelho
+          'rgba(54, 162, 235, 0.7)',   // Azul
+          'rgba(255, 206, 86, 0.7)',   // Amarelo
+          'rgba(75, 192, 192, 0.7)',   // Verde água
+          'rgba(153, 102, 255, 0.7)',  // Roxo
+          'rgba(255, 159, 64, 0.7)',   // Laranja
+          'rgba(199, 199, 199, 0.7)',  // Cinza
+          'rgba(83, 102, 255, 0.7)',   // Azul escuro
+          'rgba(255, 99, 255, 0.7)',   // Rosa
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(199, 199, 199, 1)',
+          'rgba(83, 102, 255, 1)',
+          'rgba(255, 99, 255, 1)',
+        ],
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          titleFont: {
+            size: 14
+          },
+          bodyFont: {
+            size: 13
+          },
+          callbacks: {
+            label: function(context) {
+              return 'R$ ' + context.parsed.y.toFixed(2);
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return 'R$ ' + value.toFixed(0);
+            }
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)'
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      },
+      animation: {
+        duration: 1000,
+        easing: 'easeInOutQuart'
+      }
+    }
+  });
+  
+  console.log('✅ Chart initialized');
+}
+
+function updateChart() {
+  if (!expensesChart) {
+    console.warn('⚠️ Chart not initialized yet');
+    return;
+  }
+  
+  const expenses = transactions.filter(t => t.type === 'expense');
+  
+  if (expenses.length === 0) {
+    document.getElementById('expenses-chart').style.display = 'none';
+    document.getElementById('chart-empty-message').classList.remove('hidden');
+    return;
+  }
+  
+  document.getElementById('expenses-chart').style.display = 'block';
+  document.getElementById('chart-empty-message').classList.add('hidden');
+  
+  const categoryTotals = {};
+  
+  expenses.forEach(expense => {
+    if (!categoryTotals[expense.category]) {
+      categoryTotals[expense.category] = 0;
+    }
+    categoryTotals[expense.category] += expense.amount;
+  });
+  
+  const sortedCategories = Object.entries(categoryTotals)
+    .sort((a, b) => b[1] - a[1]);
+  
+  const labels = sortedCategories.map(item => item[0]);
+  const data = sortedCategories.map(item => item[1]);
+  
+  expensesChart.data.labels = labels;
+  expensesChart.data.datasets[0].data = data;
+  expensesChart.update('active');
+  
+  console.log('📊 Chart updated with', expenses.length, 'expenses');
 }
 
 let deferredPrompt;
