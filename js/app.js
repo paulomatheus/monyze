@@ -223,7 +223,6 @@ function renderList() {
         ${t.type === 'income' ? '+' : '-'} ${formatCurrency(t.amount)}
       </div>
       <div class="item-actions">
-        <div class="item-actions">
         <button onclick="editTransaction(${t.id})" title="Edit">✏️</button>
   <button onclick="deleteTransaction(${t.id})" title="Delete">🗑️</button>
 </div>
