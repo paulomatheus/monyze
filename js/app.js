@@ -609,6 +609,416 @@ function initializeViewAllButton() {
   }
 }
 
+let pieChart = null;
+let lineChart = null;
+let currentPeriod = 'current-month';
+let filteredTransactions = [];
+
+function initializeReportsPage() {
+  initializePieChart();
+  initializeLineChart();
+  
+  const periodBtns = document.querySelectorAll('.period-btn');
+  periodBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      periodBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');      
+      currentPeriod = btn.dataset.period;
+      updateReports();
+    });
+  });
+  
+  const btnExportCsv = document.getElementById('btn-export-csv');
+  if (btnExportCsv) {
+    btnExportCsv.addEventListener('click', exportToCSV);
+  }
+  
+  console.log('📊 Reports page initialized');
+}
+
+function filterTransactionsByPeriod(period) {
+  const now = new Date();
+  let startDate;
+  
+  switch(period) {
+    case 'current-month':
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      break;
+      
+    case 'last-3-months':
+      startDate = new Date(now.getFullYear(), now.getMonth() - 3, 1);
+      break;
+      
+    case 'current-year':
+      startDate = new Date(now.getFullYear(), 0, 1);
+      break;
+      
+    case 'all':
+      return transactions;
+      
+    default:
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+  
+  return transactions.filter(t => {
+    const transactionDate = new Date(t.date);
+    return transactionDate >= startDate;
+  });
+}
+
+function getPeriodLabel(period) {
+  const now = new Date();
+  
+  switch(period) {
+    case 'current-month':
+      return now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+      
+    case 'last-3-months':
+      return 'Últimos 3 meses';
+      
+    case 'current-year':
+      return `Ano de ${now.getFullYear()}`;
+      
+    case 'all':
+      return 'Todo o período';
+      
+    default:
+      return '-';
+  }
+}
+
+function updateReports() {
+  console.log('🔄 Updating reports for period:', currentPeriod);
+  filteredTransactions = filterTransactionsByPeriod(currentPeriod);
+  updateReportStats();
+  updatePieChart();
+  updateLineChart();
+  updateTopCategories();
+}
+
+function updateReportStats() {
+  const income = filteredTransactions
+    .filter(t => t.type === 'income')
+    .reduce((sum, t) => sum + t.amount, 0);
+    
+  const expenses = filteredTransactions
+    .filter(t => t.type === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0);
+    
+  const balance = income - expenses;
+  
+  const incomeCount = filteredTransactions.filter(t => t.type === 'income').length;
+  const expenseCount = filteredTransactions.filter(t => t.type === 'expense').length;
+  
+  document.getElementById('report-total-income').textContent = formatCurrency(income);
+  document.getElementById('report-total-expenses').textContent = formatCurrency(expenses);
+  document.getElementById('report-balance').textContent = formatCurrency(balance);
+  
+  document.getElementById('report-income-count').textContent = 
+    `${incomeCount} transação${incomeCount !== 1 ? 'ões' : ''}`;
+  document.getElementById('report-expense-count').textContent = 
+    `${expenseCount} transação${expenseCount !== 1 ? 'ões' : ''}`;
+  document.getElementById('report-period-label').textContent = getPeriodLabel(currentPeriod);
+}
+
+function initializePieChart() {
+  const ctx = document.getElementById('pie-chart');
+  
+  if (!ctx) {
+    console.error('❌ Pie chart canvas not found');
+    return;
+  }
+  
+  pieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: [],
+      datasets: [{
+        data: [],
+        backgroundColor: [
+          '#FF6384',
+          '#36A2EB',
+          '#FFCE56',
+          '#4BC0C0',
+          '#9966FF',
+          '#FF9F40',
+          '#FF6384',
+          '#C9CBCF',
+          '#4BC0C0',
+        ],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 15,
+            font: {
+              size: 12
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((value / total) * 100).toFixed(1);
+              return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+  
+  console.log('✅ Pie chart initialized');
+}
+
+function updatePieChart() {
+  if (!pieChart) {
+    console.warn('⚠️ Pie chart not initialized');
+    return;
+  }
+  
+  const expenses = filteredTransactions.filter(t => t.type === 'expense');
+  
+  if (expenses.length === 0) {
+    document.getElementById('pie-chart').style.display = 'none';
+    document.getElementById('pie-empty-message').classList.remove('hidden');
+    return;
+  }
+  
+  document.getElementById('pie-chart').style.display = 'block';
+  document.getElementById('pie-empty-message').classList.add('hidden');
+  
+  const categoryTotals = {};
+  expenses.forEach(expense => {
+    if (!categoryTotals[expense.category]) {
+      categoryTotals[expense.category] = 0;
+    }
+    categoryTotals[expense.category] += expense.amount;
+  });
+  
+  const sortedCategories = Object.entries(categoryTotals)
+    .sort((a, b) => b[1] - a[1]);
+  
+  const labels = sortedCategories.map(item => item[0]);
+  const data = sortedCategories.map(item => item[1]);
+  
+  pieChart.data.labels = labels;
+  pieChart.data.datasets[0].data = data;
+  pieChart.update('active');
+  
+  console.log('🥧 Pie chart updated');
+}
+
+function initializeLineChart() {
+  const ctx = document.getElementById('line-chart');
+  
+  if (!ctx) {
+    console.error('❌ Line chart canvas not found');
+    return;
+  }
+  
+  lineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'Receitas',
+          data: [],
+          borderColor: '#4CAF50',
+          backgroundColor: 'rgba(76, 175, 80, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4
+        },
+        {
+          label: 'Despesas',
+          data: [],
+          borderColor: '#f44336',
+          backgroundColor: 'rgba(244, 67, 54, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          callbacks: {
+            label: function(context) {
+              return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return 'R$ ' + value.toFixed(0);
+            }
+          }
+        }
+      }
+    }
+  });
+  
+  console.log('✅ Line chart initialized');
+}
+
+function updateLineChart() {
+  if (!lineChart) {
+    console.warn('⚠️ Line chart not initialized');
+    return;
+  }
+  
+  if (filteredTransactions.length === 0) {
+    document.getElementById('line-chart').style.display = 'none';
+    document.getElementById('line-empty-message').classList.remove('hidden');
+    return;
+  }
+  
+  document.getElementById('line-chart').style.display = 'block';
+  document.getElementById('line-empty-message').classList.add('hidden');
+  
+  const monthlyData = {};
+  
+  filteredTransactions.forEach(t => {
+    const date = new Date(t.date);
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    
+    if (!monthlyData[monthKey]) {
+      monthlyData[monthKey] = { income: 0, expenses: 0 };
+    }
+    
+    if (t.type === 'income') {
+      monthlyData[monthKey].income += t.amount;
+    } else {
+      monthlyData[monthKey].expenses += t.amount;
+    }
+  });
+  
+  const sortedMonths = Object.keys(monthlyData).sort();
+  
+  const labels = sortedMonths.map(monthKey => {
+    const [year, month] = monthKey.split('-');
+    const date = new Date(year, month - 1);
+    return date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+  });
+  
+  const incomeData = sortedMonths.map(m => monthlyData[m].income);
+  const expensesData = sortedMonths.map(m => monthlyData[m].expenses);
+  
+  lineChart.data.labels = labels;
+  lineChart.data.datasets[0].data = incomeData;
+  lineChart.data.datasets[1].data = expensesData;
+  lineChart.update('active');
+  
+  console.log('📈 Line chart updated');
+}
+
+function updateTopCategories() {
+  const list = document.getElementById('top-categories-list');
+  
+  if (!list) return;
+  
+  const expenses = filteredTransactions.filter(t => t.type === 'expense');
+  
+  if (expenses.length === 0) {
+    list.innerHTML = '<div class="empty-message">Sem dados disponíveis</div>';
+    return;
+  }
+  
+  const categoryTotals = {};
+  expenses.forEach(expense => {
+    if (!categoryTotals[expense.category]) {
+      categoryTotals[expense.category] = 0;
+    }
+    categoryTotals[expense.category] += expense.amount;
+  });
+  
+  const sortedCategories = Object.entries(categoryTotals)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+  
+  const maxValue = sortedCategories[0][1];
+  
+  list.innerHTML = sortedCategories.map(([category, amount], index) => {
+    const percentage = (amount / maxValue) * 100;
+    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}º`;
+    
+    return `
+      <div class="category-item">
+        <div class="category-rank">${medal}</div>
+        <div class="category-info">
+          <div class="category-name">${category}</div>
+          <div class="category-bar">
+            <div class="category-bar-fill" style="width: ${percentage}%"></div>
+          </div>
+        </div>
+        <div class="category-amount">${formatCurrency(amount)}</div>
+      </div>
+    `;
+  }).join('');
+  
+  console.log('🏆 Top categories updated');
+}
+
+function exportToCSV() {
+  if (filteredTransactions.length === 0) {
+    alert('Nenhuma transação para exportar!');
+    return;
+  }
+  
+  let csv = 'Tipo,Descrição,Valor,Categoria,Data\n';
+  
+  filteredTransactions.forEach(t => {
+    const type = t.type === 'income' ? 'Receita' : 'Despesa';
+    const description = t.description.replace(/,/g, ';');
+    const amount = t.amount.toFixed(2).replace('.', ',');
+    const category = t.category;
+    const date = new Date(t.date).toLocaleDateString('pt-BR');
+    
+    csv += `${type},${description},${amount},${category},${date}\n`;
+  });
+  
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', `monyze-relatorio-${currentPeriod}-${Date.now()}.csv`);
+  link.style.visibility = 'hidden';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  console.log('📥 CSV exported:', filteredTransactions.length, 'transactions');
+  alert('✅ Relatório exportado com sucesso!');
+}
+
 let deferredPrompt;
 
 window.addEventListener('beforeinstallprompt', (e) => {

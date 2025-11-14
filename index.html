@@ -131,19 +131,78 @@
     </section>
   </div>
 
-  <div id="page-reports" class="page">
-    <section class="page-header">
-      <h1>📊 Relatórios</h1>
-      <p class="page-subtitle">Análise completa das suas finanças</p>
-    </section>
+<div id="page-reports" class="page">
+  <section class="page-header">
+    <h1>📊 Relatórios</h1>
+    <p class="page-subtitle">Análise completa das suas finanças</p>
+  </section>
 
-    <section class="report-content">
-      <div class="report-placeholder">
-        <h2>🚧 Em Construção</h2>
-        <p>Relatórios detalhados em breve!</p>
+  <section class="period-filters">
+    <button class="period-btn active" data-period="current-month">Este Mês</button>
+    <button class="period-btn" data-period="last-3-months">Últimos 3 Meses</button>
+    <button class="period-btn" data-period="current-year">Este Ano</button>
+    <button class="period-btn" data-period="all">Tudo</button>
+  </section>
+
+  <section class="report-stats">
+    <div class="stat-card income-stat">
+      <div class="stat-icon">💰</div>
+      <div class="stat-info">
+        <h4>Total de Receitas</h4>
+        <p class="stat-value" id="report-total-income">R$ 0,00</p>
+        <span class="stat-count" id="report-income-count">0 transações</span>
       </div>
-    </section>
-  </div>
+    </div>
+
+    <div class="stat-card expense-stat">
+      <div class="stat-icon">💸</div>
+      <div class="stat-info">
+        <h4>Total de Despesas</h4>
+        <p class="stat-value" id="report-total-expenses">R$ 0,00</p>
+        <span class="stat-count" id="report-expense-count">0 transações</span>
+      </div>
+    </div>
+
+    <div class="stat-card balance-stat">
+      <div class="stat-icon">📈</div>
+      <div class="stat-info">
+        <h4>Saldo do Período</h4>
+        <p class="stat-value" id="report-balance">R$ 0,00</p>
+        <span class="stat-count" id="report-period-label">-</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="chart-section">
+    <div class="chart-header">
+      <h2>🥧 Despesas por Categoria</h2>
+      <button id="btn-export-csv" class="btn-icon" title="Exportar CSV">📥</button>
+    </div>
+    <div class="chart-container chart-pie">
+      <canvas id="pie-chart"></canvas>
+    </div>
+    <div id="pie-empty-message" class="chart-empty-message hidden">
+      Nenhuma despesa no período selecionado
+    </div>
+  </section>
+
+  <section class="chart-section">
+    <h2>📈 Receitas vs Despesas ao Longo do Tempo</h2>
+    <div class="chart-container chart-line">
+      <canvas id="line-chart"></canvas>
+    </div>
+    <div id="line-empty-message" class="chart-empty-message hidden">
+      Dados insuficientes para gerar gráfico
+    </div>
+  </section>
+
+  <section class="top-categories">
+    <h2>🏆 Top 5 Categorias com Mais Gastos</h2>
+    <div id="top-categories-list">
+      <div class="empty-message">Sem dados disponíveis</div>
+    </div>
+  </section>
+</div>
 
   <div id="page-settings" class="page">
     <section class="page-header">
