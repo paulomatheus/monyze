@@ -1,4 +1,4 @@
-const CACHE_NAME = 'expenses-v10';
+const CACHE_NAME = 'expenses-v11';
 const urlsToCache = [
   './',
   './index.html',
@@ -62,7 +62,7 @@ self.addEventListener('fetch', event => {
         console.log('[Service Worker] Fetching from network:', event.request.url);
         return fetch(event.request)
           .then(response => {
-            if (!response || response.status !== 200 || response.type !== 'basic') {
+            if (!response || response.status !== 200) {
               return response;
             }
             
