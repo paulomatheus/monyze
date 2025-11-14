@@ -17,6 +17,7 @@ async function initializeApp() {
     initializeBottomNav();
     initializeChart();
     initializeViewAllButton();
+    initializeReportsPage();
 
     document.getElementById('date').valueAsDate = new Date();
 
@@ -517,7 +518,10 @@ function onPageLoad(pageName) {
       break;
       
     case 'reports':
-      console.log('📊 Reports page loaded');
+      if (!pieChart || !lineChart) {
+        initializeReportsPage();
+      }
+      updateReports();
       break;
       
     case 'settings':
