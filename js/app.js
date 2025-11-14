@@ -16,6 +16,7 @@ async function initializeApp() {
     initializeDrawer();
     initializeBottomNav();
     initializeChart();
+    initializeViewAllButton();
 
     document.getElementById('date').valueAsDate = new Date();
 
@@ -277,34 +278,32 @@ function initializeDrawer() {
   drawerClose.addEventListener('click', closeDrawer);
   drawerOverlay.addEventListener('click', closeDrawer);
 
-  drawerItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      drawerItems.forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      const page = item.dataset.page;
-      console.log('Navigating to:', page);
-      closeDrawer();
-    });
+drawerItems.forEach(item => {
+  item.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    const page = item.dataset.page;
+    
+    showPage(page);
+    
+    closeDrawer();
   });
+});
 }
 
 function initializeBottomNav() {
   const navItems = document.querySelectorAll('.nav-item');
-  const navAdd = document.getElementById('nav-add');
-
+  
   navItems.forEach(item => {
     item.addEventListener('click', () => {
       const page = item.dataset.page;
-
+      
       if (page === 'add') {
         openModal();
         return;
       }
-
-      navItems.forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      navigateToPage(page);
+      
+      showPage(page);
     });
   });
 }
@@ -323,11 +322,9 @@ function navigateToPage(page) {
       console.log('📊 Showing Reports');
       break;
   }
+  showPage(page);
 }
 
-// ========================================
-// CHART (Bar Chart)
-// ========================================
 function initializeChart() {
   const ctx = document.getElementById('expenses-chart');
   
@@ -336,7 +333,6 @@ function initializeChart() {
     return;
   }
   
-  // Configuração do gráfico
   expensesChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -345,15 +341,15 @@ function initializeChart() {
         label: 'Expenses by Category (R$)',
         data: [],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.7)',   // Vermelho
-          'rgba(54, 162, 235, 0.7)',   // Azul
-          'rgba(255, 206, 86, 0.7)',   // Amarelo
-          'rgba(75, 192, 192, 0.7)',   // Verde água
-          'rgba(153, 102, 255, 0.7)',  // Roxo
-          'rgba(255, 159, 64, 0.7)',   // Laranja
-          'rgba(199, 199, 199, 0.7)',  // Cinza
-          'rgba(83, 102, 255, 0.7)',   // Azul escuro
-          'rgba(255, 99, 255, 0.7)',   // Rosa
+          'rgba(255, 99, 132, 0.7)',
+          'rgba(54, 162, 235, 0.7)',
+          'rgba(255, 206, 86, 0.7)',
+          'rgba(75, 192, 192, 0.7)',
+          'rgba(153, 102, 255, 0.7)',
+          'rgba(255, 159, 64, 0.7)',
+          'rgba(199, 199, 199, 0.7)',
+          'rgba(83, 102, 255, 0.7)',
+          'rgba(255, 99, 255, 0.7)',
         ],
         borderColor: [
           'rgba(255, 99, 132, 1)',
@@ -459,6 +455,158 @@ function updateChart() {
   expensesChart.update('active');
   
   console.log('📊 Chart updated with', expenses.length, 'expenses');
+}
+
+let currentPage = 'home';
+
+function showPage(pageName) {
+  console.log('📄 Showing page:', pageName);
+  
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+  
+  const targetPage = document.getElementById(`page-${pageName}`);
+  if (targetPage) {
+    targetPage.classList.add('active');
+    currentPage = pageName;
+    
+    updateBottomNav(pageName);
+    
+    updateDrawerMenu(pageName);
+    
+    onPageLoad(pageName);
+  } else {
+    console.error('❌ Page not found:', pageName);
+  }
+}
+
+function updateBottomNav(pageName) {
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(item => {
+    const itemPage = item.dataset.page;
+    if (itemPage === pageName) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
+}
+
+function updateDrawerMenu(pageName) {
+  const drawerItems = document.querySelectorAll('.drawer-item');
+  drawerItems.forEach(item => {
+    const itemPage = item.dataset.page;
+    
+    if (itemPage === pageName) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
+}
+
+function onPageLoad(pageName) {
+  switch(pageName) {
+    case 'home':
+      render();
+      break;
+      
+    case 'history':
+      renderFullHistory();
+      break;
+      
+    case 'reports':
+      console.log('📊 Reports page loaded');
+      break;
+      
+    case 'settings':
+      initializeSettings();
+      break;
+  }
+}
+
+function renderFullHistory() {
+  const list = document.getElementById('transaction-list-full');
+  
+  if (!list) {
+    console.error('❌ transaction-list-full not found');
+    return;
+  }
+  
+  if (transactions.length === 0) {
+    list.innerHTML = '<div class="empty-message">Nenhuma transação cadastrada</div>';
+    return;
+  }
+  
+  const sortedTransactions = [...transactions].sort((a, b) => b.timestamp - a.timestamp);
+  
+  list.innerHTML = sortedTransactions.map(t => `
+    <div class="transaction-item ${t.type}">
+      <div class="item-info">
+        <div class="description">${t.description}</div>
+        <div class="details">${t.category} • ${formatDate(t.date)}</div>
+      </div>
+      <div class="item-amount ${t.type}">
+        ${t.type === 'income' ? '+' : '-'} ${formatCurrency(t.amount)}
+      </div>
+      <div class="item-actions">
+        <button onclick="editTransaction(${t.id})" title="Editar">✏️</button>
+        <button onclick="deleteTransaction(${t.id})" title="Deletar">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+  
+  console.log('📋 Full history rendered:', transactions.length, 'transactions');
+}
+
+function initializeSettings() {
+  const btnExport = document.getElementById('btn-export-csv');
+  const btnClear = document.getElementById('btn-clear-data');
+  
+  if (btnExport) {
+    btnExport.replaceWith(btnExport.cloneNode(true));
+    const newBtnExport = document.getElementById('btn-export-csv');
+    
+    newBtnExport.addEventListener('click', () => {
+      console.log('📤 Export CSV clicked');
+      alert('EM breve!');
+    });
+  }
+  
+  if (btnClear) {
+    btnClear.replaceWith(btnClear.cloneNode(true));
+    const newBtnClear = document.getElementById('btn-clear-data');
+    
+    newBtnClear.addEventListener('click', async () => {
+      if (confirm('⚠️ ATENÇÃO! Isso vai deletar TODAS as transações. Tem certeza?')) {
+        if (confirm('Última chance! Realmente deseja apagar tudo?')) {
+          try {
+            await expensesDB.clearAll();
+            await loadTransactions();
+            render();
+            alert('✅ Todos os dados foram apagados!');
+            showPage('home');
+          } catch (error) {
+            console.error('❌ Error clearing data:', error);
+            alert('Erro ao limpar dados. Tente novamente.');
+          }
+        }
+      }
+    });
+  }
+  
+  console.log('⚙️ Settings initialized');
+}
+
+function initializeViewAllButton() {
+  const btnViewAll = document.getElementById('btn-view-all');
+  
+  if (btnViewAll) {
+    btnViewAll.addEventListener('click', () => {
+      showPage('history');
+    });
+  }
 }
 
 let deferredPrompt;

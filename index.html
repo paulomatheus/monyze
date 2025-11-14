@@ -72,6 +72,7 @@
   </nav>
 
   <main>
+  <div id="page-home" class="page active">
     <section class="summary">
       <div class="card income">
         <h3>Receitas</h3>
@@ -87,7 +88,7 @@
       </div>
     </section>
 
-     <section class="chart-section">
+    <section class="chart-section">
       <h2>📊 Expenses by Category</h2>
       <div class="chart-container">
         <canvas id="expenses-chart"></canvas>
@@ -96,16 +97,78 @@
         No expense data to display
       </div>
     </section>
-    
+
     <section class="actions">
       <button id="btn-add" class="btn-primary">+ Nova Transação</button>
     </section>
 
     <section class="transactions">
-      <h2>Histórico</h2>
+      <h2>Histórico Recente</h2>
       <div id="transaction-list"></div>
+      <button id="btn-view-all" class="btn-secondary">Ver Todas as Transações →</button>
     </section>
-  </main>
+  </div>
+
+  <div id="page-history" class="page">
+    <section class="page-header">
+      <h1>📋 Histórico Completo</h1>
+      <p class="page-subtitle">Todas as suas transações</p>
+    </section>
+
+    <section class="filters">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="🔍 Buscar transações...">
+      </div>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">Todas</button>
+        <button class="filter-btn" data-filter="income">Receitas</button>
+        <button class="filter-btn" data-filter="expense">Despesas</button>
+      </div>
+    </section>
+
+    <section class="transactions-full">
+      <div id="transaction-list-full"></div>
+    </section>
+  </div>
+
+  <div id="page-reports" class="page">
+    <section class="page-header">
+      <h1>📊 Relatórios</h1>
+      <p class="page-subtitle">Análise completa das suas finanças</p>
+    </section>
+
+    <section class="report-content">
+      <div class="report-placeholder">
+        <h2>🚧 Em Construção</h2>
+        <p>Relatórios detalhados em breve!</p>
+      </div>
+    </section>
+  </div>
+
+  <div id="page-settings" class="page">
+    <section class="page-header">
+      <h1>⚙️ Configurações</h1>
+      <p class="page-subtitle">Gerencie suas preferências</p>
+    </section>
+
+    <section class="settings-content">
+      <div class="settings-group">
+        <h3>Gerenciamento de Dados</h3>
+        <button id="btn-export-csv" class="btn-secondary">📤 Exportar para CSV</button>
+        <button id="btn-clear-data" class="btn-danger">🗑️ Limpar Todos os Dados</button>
+      </div>
+
+      <div class="settings-group">
+        <h3>Sobre</h3>
+        <div class="about-info">
+          <p><strong>Monyze</strong> v1.0</p>
+          <p>Progressive Web App para controle financeiro</p>
+          <p>Money + Analyze</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
 
   <div id="modal" class="modal">
     <div class="modal-content">

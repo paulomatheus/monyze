@@ -281,7 +281,6 @@ main {
   font-size: 1rem;
 }
 
-/* Responsivo */
 @media (max-width: 600px) {
   .chart-container {
     height: 250px;
@@ -572,6 +571,200 @@ main {
 .page.active {
   display: block;
   animation: fadeIn 0.3s ease;
+}
+
+.page {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.page.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.page-header h1 {
+  color: #667eea;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.page-subtitle {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.filters {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.search-box {
+  margin-bottom: 15px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-btn {
+  flex: 1;
+  padding: 10px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.transactions-full {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-group {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.settings-group h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.settings-group button {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.btn-secondary {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background: #1976D2;
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-danger:hover {
+  background: #d32f2f;
+  transform: translateY(-2px);
+}
+
+.about-info {
+  color: #666;
+  line-height: 1.8;
+}
+
+.about-info p {
+  margin-bottom: 8px;
+}
+
+.report-content {
+  background: white;
+  padding: 60px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.report-placeholder h2 {
+  color: #667eea;
+  margin-bottom: 10px;
+}
+
+.report-placeholder p {
+  color: #666;
+}
+
+#btn-view-all {
+  width: 100%;
+  margin-top: 15px;
+  background: transparent;
+  color: #667eea;
+  border: 2px solid #667eea;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+#btn-view-all:hover {
+  background: #667eea;
+  color: white;
 }
 
 @keyframes fadeIn {
