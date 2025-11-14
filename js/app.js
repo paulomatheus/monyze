@@ -632,7 +632,7 @@ function initializeReportsPage() {
     });
   });
   
-  const btnExportCsv = document.getElementById('btn-export-csv');
+  const btnExportCsv = document.getElementById('btn-export-report-csv');
   if (btnExportCsv) {
     btnExportCsv.addEventListener('click', exportToCSV);
   }
