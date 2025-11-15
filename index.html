@@ -30,12 +30,12 @@
 
 <body>
   <header class="app-header">
-    <button class="menu-toggle" id="menu-toggle">
-      <span class="hamburger"></span>
-    </button>
-    <h1>MONYZE</h1>
-    <button id="btn-install" class="btn-install hidden">📱</button>
-  </header>
+  <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu de navegação">
+    <span class="hamburger"></span>
+  </button>
+  <h1>MONYZE</h1>
+  <button id="btn-install" class="btn-install hidden" aria-label="Instalar aplicativo">📱</button>
+</header>
 
   <div class="drawer-overlay" id="drawer-overlay"></div>
 
@@ -103,7 +103,7 @@
     <section class="actions">
       <button id="btn-add" class="btn-primary">+ Nova Transação</button>
     </section>
-    
+
     <section class="chart-section">
       <h2>📊 Despesas por Categoria</h2>
       <div class="chart-container">
@@ -286,6 +286,128 @@
   </section>
 </div>
 </main>
+
+<div id="page-about" class="page">
+  <section class="page-header">
+    <h1>ℹ️ Sobre o Monyze</h1>
+    <p class="page-subtitle">Informações do aplicativo</p>
+  </section>
+
+  <section class="about-content">
+    <div class="about-section">
+      <div class="about-logo">
+        <div class="logo-circle">💰</div>
+        <h2>Monyze</h2>
+        <p class="version">Versão 1.0.0</p>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h3>📱 O que é o Monyze?</h3>
+      <p>
+        Monyze (Money + Analyze) é uma Progressive Web App (PWA) desenvolvida para ajudar você a 
+        gerenciar suas finanças pessoais de forma simples e eficiente, funcionando 
+        100% offline após a instalação.
+      </p>
+    </div>
+
+    <div class="about-section">
+      <h3>✨ Funcionalidades</h3>
+      <ul class="features-list">
+        <li>💾 Funciona completamente offline</li>
+        <li>📊 Gráficos interativos e visuais</li>
+        <li>📱 Instalável como aplicativo nativo</li>
+        <li>✏️ Edição e exclusão de transações</li>
+        <li>📥 Exportação de dados para CSV</li>
+        <li>🌙 Modo escuro para conforto visual</li>
+        <li>🏷️ Categorização automática</li>
+        <li>📈 Relatórios detalhados por período</li>
+      </ul>
+    </div>
+
+    <div class="about-section">
+      <h3>🛠️ Tecnologias Utilizadas</h3>
+      <div class="tech-grid">
+        <div class="tech-item">
+          <div class="tech-icon">📄</div>
+          <div class="tech-name">HTML5</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🎨</div>
+          <div class="tech-name">CSS3</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">⚡</div>
+          <div class="tech-name">JavaScript</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">📊</div>
+          <div class="tech-name">Chart.js</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">💾</div>
+          <div class="tech-name">IndexedDB</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">⚙️</div>
+          <div class="tech-name">Service Worker</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h3>🎓 Projeto Acadêmico</h3>
+      <p>
+        Este projeto foi desenvolvido como trabalho avaliativo da disciplina 
+        <strong>Desenvolvimento híbrido de aplicativos móveis (DM122)</strong> do curso de pós-graduação.
+      </p>
+      <p class="highlight-text">
+        Objetivo: Demonstrar conhecimentos em Progressive Web Apps, 
+        incluindo Service Workers, Cache API e IndexedDB.
+      </p>
+    </div>
+
+    <div class="about-section">
+      <h3>📋 Requisitos Atendidos</h3>
+      <ul class="requirements-list">
+        <li class="requirement-item">
+          <span class="requirement-icon">✅</span>
+          <span>Controle de versão (Git/GitHub)</span>
+        </li>
+        <li class="requirement-item">
+          <span class="requirement-icon">✅</span>
+          <span>Implantação em provedor (GitHub Pages)</span>
+        </li>
+        <li class="requirement-item">
+          <span class="requirement-icon">✅</span>
+          <span>HTML5 Cache API (Service Worker)</span>
+        </li>
+        <li class="requirement-item">
+          <span class="requirement-icon">✅</span>
+          <span>IndexedDB com CRUD completo</span>
+        </li>
+        <li class="requirement-item">
+          <span class="requirement-icon">✅</span>
+          <span>Funcionamento 100% offline</span>
+        </li>
+        <li class="requirement-item">
+          <span class="requirement-icon">✅</span>
+          <span>PWA instalável</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="about-section">
+      <h3>📝 Licença</h3>
+      <p>Este projeto é de código aberto e está disponível sob a licença MIT.</p>
+    </div>
+
+    <div class="about-section center">
+      <p class="made-with">Paulo Matheus</p>
+      <p class="copyright">© 2025 Monyze - Todos os direitos reservados</p>
+    </div>
+  </section>
+</div>
 
 <div id="page-categories" class="page">
   <section class="page-header">

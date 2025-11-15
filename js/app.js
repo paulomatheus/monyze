@@ -109,6 +109,12 @@ function closeModal() {
 async function saveTransaction(event) {
   event.preventDefault();
   
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  const originalText = submitBtn.textContent;
+  
+  submitBtn.disabled = true;
+  submitBtn.textContent = isEditMode ? 'Atualizando...' : 'Salvando...';
+  
   const type = document.querySelector('input[name="type"]:checked').value;
   const description = document.getElementById('description').value;
   const amount = parseFloat(document.getElementById('amount').value);
@@ -141,18 +147,39 @@ async function saveTransaction(event) {
     closeModal();
     render();
     
+    if (currentPage === 'reports') {
+      updateReports();
+    }
+    if (currentPage === 'categories') {
+      updateCategoriesPage();
+    }
+    
   } catch (error) {
     console.error('❌ Error saving transaction:', error);
-    alert('Error saving transaction. Please try again.');
+    alert('Erro ao salvar transação. Tente novamente.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
   }
 }
 
 async function deleteTransaction(id) {
   if (confirm('Are you sure you want to delete this transaction?')) {
-    try {
+     try {
       await expensesDB.delete(id);
       await loadTransactions();
       render();
+      
+      if (currentPage === 'reports') {
+        updateReports();
+      }
+      if (currentPage === 'categories') {
+        updateCategoriesPage();
+      }
+      if (currentPage === 'settings') {
+        updateSettingsStats();
+      }
+      
+      console.log('✅ Transaction deleted successfully');
     } catch (error) {
       console.error('❌ Error deleting:', error);
       alert('Error deleting transaction.');
@@ -542,6 +569,10 @@ function onPageLoad(pageName) {
       
     case 'settings':
       initializeSettings();
+      break;
+      
+    case 'about':
+      console.log('ℹ️ About page loaded');
       break;
   }
 }

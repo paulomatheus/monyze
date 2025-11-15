@@ -1417,6 +1417,221 @@ body.dark-mode .category-card-details {
   border-top-color: #2a2a3e;
 }
 
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.about-section {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.about-section h3 {
+  color: #667eea;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.about-section p {
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.about-section p:last-child {
+  margin-bottom: 0;
+}
+
+.about-logo {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.logo-circle {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.about-logo h2 {
+  font-size: 2.5rem;
+  color: #667eea;
+  margin-bottom: 10px;
+}
+
+.version {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 0 0;
+}
+
+.features-list li {
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  color: #333;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.tech-item {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.tech-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.tech-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.tech-name {
+  color: #333;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.highlight-text {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  margin-top: 15px;
+}
+
+.requirements-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 0 0;
+}
+
+.requirement-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.requirement-icon {
+  font-size: 1.5rem;
+}
+
+.about-section.center {
+  text-align: center;
+}
+
+.made-with {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 10px;
+}
+
+.copyright {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+body.dark-mode .about-section {
+  background: #1a1a2e;
+}
+
+body.dark-mode .about-section h3 {
+  color: #667eea;
+}
+
+body.dark-mode .about-section p,
+body.dark-mode .features-list li,
+body.dark-mode .tech-name,
+body.dark-mode .requirement-item {
+  color: #e0e0e0;
+}
+
+body.dark-mode .features-list li,
+body.dark-mode .tech-item,
+body.dark-mode .requirement-item {
+  background: #16213e;
+}
+
+body.dark-mode .highlight-text {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+@media (max-width: 600px) {
+  .tech-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .logo-circle {
+    width: 100px;
+    height: 100px;
+    font-size: 3rem;
+  }
+  
+  .about-logo h2 {
+    font-size: 2rem;
+  }
+}
+
+*:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+.nav-item:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: 2px;
+}
+
+.drawer-item:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: -3px;
+}
+
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  border-color: #667eea;
+}
+
 @media (max-width: 600px) {
   .category-stats-cards {
     grid-template-columns: 1fr;
