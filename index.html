@@ -277,13 +277,61 @@
         <p>Money + Analyze</p>
         <p style="margin-top: 15px; color: #999; font-size: 0.85rem;">
           Desenvolvido como projeto acadêmico<br>
-          Disciplina: Mobile Computing (DM122)
+          Disciplina: Desenvolvimento híbrido de aplicativos móveis (DM122)
         </p>
       </div>
     </div>
   </section>
 </div>
 </main>
+
+<div id="page-categories" class="page">
+  <section class="page-header">
+    <h1>🏷️ Categorias</h1>
+    <p class="page-subtitle">Análise por categoria</p>
+  </section>
+
+  <section class="category-stats-cards">
+    <div class="category-stat-card">
+      <div class="category-stat-icon">📊</div>
+      <div class="category-stat-info">
+        <div class="category-stat-label">Total de Categorias</div>
+        <div class="category-stat-value" id="total-categories">0</div>
+      </div>
+    </div>
+    
+    <div class="category-stat-card">
+      <div class="category-stat-icon">🔥</div>
+      <div class="category-stat-info">
+        <div class="category-stat-label">Categoria Mais Usada</div>
+        <div class="category-stat-value" id="most-used-category">-</div>
+      </div>
+    </div>
+    
+    <div class="category-stat-card">
+      <div class="category-stat-icon">💸</div>
+      <div class="category-stat-info">
+        <div class="category-stat-label">Maior Gasto</div>
+        <div class="category-stat-value" id="highest-spend-category">-</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chart-section">
+    <h2>🥧 Distribuição por Categoria</h2>
+    <div class="chart-container chart-pie">
+      <canvas id="categories-pie-chart"></canvas>
+    </div>
+    <div id="categories-pie-empty" class="chart-empty-message hidden">
+      Nenhuma transação cadastrada
+    </div>
+  </section>
+
+  <section class="categories-list-section">
+    <h2>📋 Todas as Categorias</h2>
+    <div id="categories-list"></div>
+  </section>
+</div>
 
   <div id="modal" class="modal">
     <div class="modal-content">

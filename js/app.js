@@ -533,6 +533,13 @@ function onPageLoad(pageName) {
       updateReports();
       break;
       
+    case 'categories':
+      if (!categoriesPieChart) {
+        initializeCategoriesPage();
+      }
+      updateCategoriesPage();
+      break;
+      
     case 'settings':
       initializeSettings();
       break;
@@ -836,6 +843,212 @@ function exportAllTransactionsToCSV() {
   alert(`✅ ${transactions.length} transações exportadas com sucesso!`);
 }
 
+function initializeCategoriesPage() {
+  const ctx = document.getElementById('categories-pie-chart');
+  
+  if (!ctx) {
+    console.error('❌ Categories pie chart canvas not found');
+    return;
+  }
+  
+  categoriesPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: [],
+      datasets: [{
+        data: [],
+        backgroundColor: [
+          '#FF6384',
+          '#36A2EB',
+          '#FFCE56',
+          '#4BC0C0',
+          '#9966FF',
+          '#FF9F40',
+          '#FF6384',
+          '#C9CBCF',
+          '#4BC0C0',
+          '#E7E9ED',
+        ],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 15,
+            font: {
+              size: 12
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((value / total) * 100).toFixed(1);
+              return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+  
+  console.log('✅ Categories pie chart initialized');
+}
+
+function updateCategoriesPage() {
+  console.log('🏷️ Updating categories page');
+  
+  updateCategoryStats();
+  updateCategoriesPieChart();
+  renderCategoriesList();
+}
+
+function updateCategoryStats() {
+  const categoryData = getCategoryData();
+  const categories = Object.keys(categoryData);
+  
+  document.getElementById('total-categories').textContent = categories.length;
+  
+  if (categories.length === 0) {
+    document.getElementById('most-used-category').textContent = '-';
+    document.getElementById('highest-spend-category').textContent = '-';
+    return;
+  }
+  
+  const sortedByCount = categories.sort((a, b) => 
+    categoryData[b].count - categoryData[a].count
+  );
+  document.getElementById('most-used-category').textContent = sortedByCount[0];
+  
+  const sortedByAmount = categories.sort((a, b) => 
+    categoryData[b].total - categoryData[a].total
+  );
+  document.getElementById('highest-spend-category').textContent = sortedByAmount[0];
+}
+
+function updateCategoriesPieChart() {
+  if (!categoriesPieChart) {
+    console.warn('⚠️ Categories pie chart not initialized');
+    return;
+  }
+  
+  if (transactions.length === 0) {
+    document.getElementById('categories-pie-chart').style.display = 'none';
+    document.getElementById('categories-pie-empty').classList.remove('hidden');
+    return;
+  }
+  
+  document.getElementById('categories-pie-chart').style.display = 'block';
+  document.getElementById('categories-pie-empty').classList.add('hidden');
+  
+  const categoryData = getCategoryData();
+  const sortedCategories = Object.entries(categoryData)
+    .sort((a, b) => b[1].total - a[1].total);
+  
+  const labels = sortedCategories.map(item => item[0]);
+  const data = sortedCategories.map(item => item[1].total);
+  
+  categoriesPieChart.data.labels = labels;
+  categoriesPieChart.data.datasets[0].data = data;
+  categoriesPieChart.update('active');
+  
+  console.log('🥧 Categories pie chart updated');
+}
+
+function renderCategoriesList() {
+  const list = document.getElementById('categories-list');
+  
+  if (!list) return;
+  
+  if (transactions.length === 0) {
+    list.innerHTML = '<div class="empty-message">Nenhuma transação cadastrada</div>';
+    return;
+  }
+  
+  const categoryData = getCategoryData();
+  const sortedCategories = Object.entries(categoryData)
+    .sort((a, b) => b[1].total - a[1].total);
+  
+  list.innerHTML = sortedCategories.map(([category, data]) => {
+    const avgAmount = data.total / data.count;
+    const categoryIcon = getCategoryIcon(category);
+    const cardType = data.type;
+    
+    return `
+      <div class="category-card ${cardType}">
+        <div class="category-card-header">
+          <div class="category-card-title">
+            <span class="category-card-icon">${categoryIcon}</span>
+            <span class="category-card-name">${category}</span>
+          </div>
+          <div class="category-card-amount">${formatCurrency(data.total)}</div>
+        </div>
+        <div class="category-card-details">
+          <div class="category-detail">
+            <div class="category-detail-value">${data.count}</div>
+            <div class="category-detail-label">Transações</div>
+          </div>
+          <div class="category-detail">
+            <div class="category-detail-value">${formatCurrency(avgAmount)}</div>
+            <div class="category-detail-label">Média</div>
+          </div>
+          <div class="category-detail">
+            <div class="category-detail-value">${data.type === 'income' ? 'Receita' : 'Despesa'}</div>
+            <div class="category-detail-label">Tipo</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  console.log('📋 Categories list rendered');
+}
+
+function getCategoryData() {
+  const categoryData = {};
+  
+  transactions.forEach(t => {
+    if (!categoryData[t.category]) {
+      categoryData[t.category] = {
+        total: 0,
+        count: 0,
+        type: t.type
+      };
+    }
+    categoryData[t.category].total += t.amount;
+    categoryData[t.category].count += 1;
+  });
+  
+  return categoryData;
+}
+
+function getCategoryIcon(category) {
+  const icons = {
+    'Alimentação': '🍔',
+    'Transporte': '🚗',
+    'Moradia': '🏠',
+    'Saúde': '💊',
+    'Lazer': '🎮',
+    'Educação': '📚',
+    'Salário': '💰',
+    'Freelance': '💼',
+    'Outros': '📦'
+  };
+  
+  return icons[category] || '📌';
+}
+
 function initializeViewAllButton() {
   const btnViewAll = document.getElementById('btn-view-all');
   
@@ -850,6 +1063,7 @@ let pieChart = null;
 let lineChart = null;
 let currentPeriod = 'current-month';
 let filteredTransactions = [];
+let categoriesPieChart = null;
 
 function initializeReportsPage() {
   initializePieChart();
