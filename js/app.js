@@ -931,10 +931,16 @@ function updateCategoryStats() {
   );
   document.getElementById('most-used-category').textContent = sortedByCount[0];
   
-  const sortedByAmount = categories.sort((a, b) => 
-    categoryData[b].total - categoryData[a].total
-  );
-  document.getElementById('highest-spend-category').textContent = sortedByAmount[0];
+  const expenseCategories = categories.filter(cat => categoryData[cat].type === 'expense');
+  
+  if (expenseCategories.length === 0) {
+    document.getElementById('highest-spend-category').textContent = '-';
+  } else {
+    const sortedByAmount = expenseCategories.sort((a, b) => 
+      categoryData[b].total - categoryData[a].total
+    );
+    document.getElementById('highest-spend-category').textContent = sortedByAmount[0];
+  }
 }
 
 function updateCategoriesPieChart() {
@@ -1372,21 +1378,29 @@ function updateLineChart() {
   
   const sortedMonths = Object.keys(monthlyData).sort();
   
+  if (sortedMonths.length < 2) {
+    sortedMonths.push(sortedMonths[0]);
+    const duplicateKey = sortedMonths[1];
+    if (!monthlyData[duplicateKey]) {
+      monthlyData[duplicateKey] = { income: 0, expenses: 0 };
+    }
+  }
+  
   const labels = sortedMonths.map(monthKey => {
     const [year, month] = monthKey.split('-');
     const date = new Date(year, month - 1);
     return date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
   });
   
-  const incomeData = sortedMonths.map(m => monthlyData[m].income);
-  const expensesData = sortedMonths.map(m => monthlyData[m].expenses);
+  const incomeData = sortedMonths.map(m => monthlyData[m]?.income || 0);
+  const expensesData = sortedMonths.map(m => monthlyData[m]?.expenses || 0);
   
   lineChart.data.labels = labels;
   lineChart.data.datasets[0].data = incomeData;
   lineChart.data.datasets[1].data = expensesData;
   lineChart.update('active');
   
-  console.log('📈 Line chart updated');
+  console.log('📈 Line chart updated with', sortedMonths.length, 'months');
 }
 
 function updateTopCategories() {
