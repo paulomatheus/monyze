@@ -1035,6 +1035,223 @@ main {
   color: #999;
   font-size: 0.95rem;
 }
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+}
+
+.setting-info {
+  flex: 1;
+}
+
+.setting-info strong {
+  display: block;
+  color: #333;
+  margin-bottom: 5px;
+  font-size: 1rem;
+}
+
+.setting-info p {
+  color: #666;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: #667eea;
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.stat-item {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+body.dark-mode {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+body.dark-mode .app-header {
+  background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+}
+
+body.dark-mode .drawer {
+  background: #1a1a2e;
+  color: #e0e0e0;
+}
+
+body.dark-mode .drawer-header {
+  background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+}
+
+body.dark-mode .drawer-item {
+  color: #e0e0e0;
+}
+
+body.dark-mode .drawer-item:hover {
+  background: #16213e;
+}
+
+body.dark-mode .drawer-menu li {
+  border-bottom-color: #2a2a3e;
+}
+
+body.dark-mode .drawer-footer {
+  border-top-color: #2a2a3e;
+  color: #888;
+}
+
+body.dark-mode .card,
+body.dark-mode .chart-section,
+body.dark-mode .transactions,
+body.dark-mode .page-header,
+body.dark-mode .filters,
+body.dark-mode .transactions-full,
+body.dark-mode .settings-group,
+body.dark-mode .report-content,
+body.dark-mode .top-categories,
+body.dark-mode .bottom-nav {
+  background: #1a1a2e;
+  color: #e0e0e0;
+}
+
+body.dark-mode .card h3,
+body.dark-mode .page-subtitle,
+body.dark-mode .setting-info p,
+body.dark-mode .stat-label,
+body.dark-mode .item-info .details,
+body.dark-mode .category-name,
+body.dark-mode .filter-summary,
+body.dark-mode .about-info,
+body.dark-mode .drawer-footer {
+  color: #b0b0b0;
+}
+
+body.dark-mode .transaction-item,
+body.dark-mode .stat-item,
+body.dark-mode .category-item {
+  background: #16213e;
+  color: #e0e0e0;
+}
+
+body.dark-mode .setting-info strong,
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3,
+body.dark-mode .item-info .description,
+body.dark-mode .stat-number,
+body.dark-mode label,
+body.dark-mode .form-group label {
+  color: #ffffff;
+}
+
+body.dark-mode .search-box input,
+body.dark-mode .form-group input,
+body.dark-mode .form-group select {
+  background: #16213e;
+  border-color: #2a2a3e;
+  color: #e0e0e0;
+}
+
+body.dark-mode .search-box input::placeholder,
+body.dark-mode .form-group input::placeholder {
+  color: #666;
+}
+
+body.dark-mode .filter-btn,
+body.dark-mode .period-btn {
+  background: #16213e;
+  color: #e0e0e0;
+  border-color: #2a2a3e;
+}
+
+body.dark-mode .modal-content {
+  background: #1a1a2e;
+  color: #e0e0e0;
+}
+
+body.dark-mode .date-group-items {
+  background: #1a1a2e;
+}
+
+body.dark-mode .date-group-items .transaction-item {
+  border-bottom-color: #2a2a3e;
+}
+
+body.dark-mode .filter-summary {
+  background: #16213e;
+  color: #999;
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
   
 @media (max-width: 600px) {
   .period-filters {

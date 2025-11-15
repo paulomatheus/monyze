@@ -217,28 +217,72 @@
 </div>
 
   <div id="page-settings" class="page">
-    <section class="page-header">
-      <h1>⚙️ Configurações</h1>
-      <p class="page-subtitle">Gerencie suas preferências</p>
-    </section>
+  <section class="page-header">
+    <h1>⚙️ Configurações</h1>
+    <p class="page-subtitle">Gerencie suas preferências</p>
+  </section>
 
-    <section class="settings-content">
-      <div class="settings-group">
-        <h3>Gerenciamento de Dados</h3>
-        <button id="btn-export-csv" class="btn-secondary">📤 Exportar para CSV</button>
-        <button id="btn-clear-data" class="btn-danger">🗑️ Limpar Todos os Dados</button>
+  <section class="settings-content">
+    <div class="settings-group">
+      <h3>🎨 Aparência</h3>
+      <div class="setting-item">
+        <div class="setting-info">
+          <strong>Tema Escuro</strong>
+          <p>Modo noturno para reduzir cansaço visual</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="dark-mode-toggle">
+          <span class="toggle-slider"></span>
+        </label>
       </div>
+    </div>
 
-      <div class="settings-group">
-        <h3>Sobre</h3>
-        <div class="about-info">
-          <p><strong>Monyze</strong> v1.0</p>
-          <p>Progressive Web App para controle financeiro</p>
-          <p>Money + Analyze</p>
+    <div class="settings-group">
+      <h3>💾 Gerenciamento de Dados</h3>
+      <button id="btn-export-all-csv" class="btn-secondary">
+        📥 Exportar Todas as Transações
+      </button>
+      <button id="btn-clear-data" class="btn-danger">
+        🗑️ Limpar Todos os Dados
+      </button>
+    </div>
+
+    <div class="settings-group">
+      <h3>📊 Estatísticas do App</h3>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number" id="total-transactions-stat">0</div>
+          <div class="stat-label">Total de Transações</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="total-income-stat">0</div>
+          <div class="stat-label">Receitas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="total-expenses-stat">0</div>
+          <div class="stat-label">Despesas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="oldest-transaction-stat">-</div>
+          <div class="stat-label">Primeira Transação</div>
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+
+    <div class="settings-group">
+      <h3>ℹ️ Sobre</h3>
+      <div class="about-info">
+        <p><strong>Monyze</strong> v1.0</p>
+        <p>Progressive Web App para controle financeiro</p>
+        <p>Money + Analyze</p>
+        <p style="margin-top: 15px; color: #999; font-size: 0.85rem;">
+          Desenvolvido como projeto acadêmico<br>
+          Disciplina: Mobile Computing (DM122)
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
 </main>
 
   <div id="modal" class="modal">

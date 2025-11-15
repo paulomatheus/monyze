@@ -13,6 +13,7 @@ async function initializeApp() {
     await registerServiceWorker();
     await loadTransactions();
 
+    applyStoredTheme();
     initializeDrawer();
     initializeBottomNav();
     initializeChart();
@@ -37,6 +38,13 @@ async function initializeApp() {
   } catch (error) {
     console.error('❌ Error initializing app:', error);
     alert('Error initializing the application. Please reload the page.');
+  }
+}
+
+function applyStoredTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
   }
 }
 
@@ -712,17 +720,17 @@ function highlightSearchTerm(text, searchTerm) {
 }
 
 function initializeSettings() {
-  const btnExport = document.getElementById('btn-export-csv');
+  const btnExportAll = document.getElementById('btn-export-all-csv');
   const btnClear = document.getElementById('btn-clear-data');
+  const darkModeToggle = document.getElementById('dark-mode-toggle');
   
-  if (btnExport) {
-    btnExport.replaceWith(btnExport.cloneNode(true));
-    const newBtnExport = document.getElementById('btn-export-csv');
+  updateSettingsStats();
+  
+  if (btnExportAll) {
+    btnExportAll.replaceWith(btnExportAll.cloneNode(true));
+    const newBtnExportAll = document.getElementById('btn-export-all-csv');
     
-    newBtnExport.addEventListener('click', () => {
-      console.log('📤 Export CSV clicked');
-      alert('EM breve!');
-    });
+    newBtnExportAll.addEventListener('click', exportAllTransactionsToCSV);
   }
   
   if (btnClear) {
@@ -736,6 +744,7 @@ function initializeSettings() {
             await expensesDB.clearAll();
             await loadTransactions();
             render();
+            updateSettingsStats();
             alert('✅ Todos os dados foram apagados!');
             showPage('home');
           } catch (error) {
@@ -747,7 +756,84 @@ function initializeSettings() {
     });
   }
   
+  if (darkModeToggle) {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+      darkModeToggle.checked = true;
+    }
+    
+    darkModeToggle.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+        console.log('🌙 Dark mode enabled');
+      } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+        console.log('☀️ Light mode enabled');
+      }
+    });
+  }
+  
   console.log('⚙️ Settings initialized');
+}
+
+function updateSettingsStats() {
+  const totalTransactions = transactions.length;
+  const totalIncome = transactions.filter(t => t.type === 'income').length;
+  const totalExpenses = transactions.filter(t => t.type === 'expense').length;
+  
+  document.getElementById('total-transactions-stat').textContent = totalTransactions;
+  document.getElementById('total-income-stat').textContent = totalIncome;
+  document.getElementById('total-expenses-stat').textContent = totalExpenses;
+  
+  if (transactions.length > 0) {
+    const sortedByDate = [...transactions].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const oldestDate = new Date(sortedByDate[0].date);
+    const formatted = oldestDate.toLocaleDateString('pt-BR', { 
+      day: '2-digit', 
+      month: 'short', 
+      year: 'numeric' 
+    });
+    document.getElementById('oldest-transaction-stat').textContent = formatted;
+  } else {
+    document.getElementById('oldest-transaction-stat').textContent = '-';
+  }
+}
+
+function exportAllTransactionsToCSV() {
+  if (transactions.length === 0) {
+    alert('Nenhuma transação para exportar!');
+    return;
+  }
+  
+  let csv = 'Tipo,Descrição,Valor,Categoria,Data\n';
+  
+  transactions.forEach(t => {
+    const type = t.type === 'income' ? 'Receita' : 'Despesa';
+    const description = t.description.replace(/,/g, ';');
+    const amount = t.amount.toFixed(2).replace('.', ',');
+    const category = t.category;
+    const date = new Date(t.date).toLocaleDateString('pt-BR');
+    
+    csv += `${type},${description},${amount},${category},${date}\n`;
+  });
+  
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', `monyze-todas-transacoes-${Date.now()}.csv`);
+  link.style.visibility = 'hidden';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  console.log('📥 All transactions exported:', transactions.length);
+  alert(`✅ ${transactions.length} transações exportadas com sucesso!`);
 }
 
 function initializeViewAllButton() {
