@@ -514,6 +514,7 @@ function onPageLoad(pageName) {
       break;
       
     case 'history':
+      resetHistoryFilters();
       renderFullHistory();
       break;
       
@@ -532,36 +533,182 @@ function onPageLoad(pageName) {
 
 function renderFullHistory() {
   const list = document.getElementById('transaction-list-full');
+  const searchInput = document.getElementById('search-input');
+  const filterBtns = document.querySelectorAll('.filter-btn');
   
   if (!list) {
     console.error('❌ transaction-list-full not found');
     return;
   }
   
-  if (transactions.length === 0) {
-    list.innerHTML = '<div class="empty-message">Nenhuma transação cadastrada</div>';
-    return;
+  let currentFilter = 'all';
+  let searchTerm = '';
+  
+  function applyFiltersAndRender() {
+    let filtered = [...transactions];
+    
+    if (currentFilter !== 'all') {
+      filtered = filtered.filter(t => t.type === currentFilter);
+    }
+    
+    if (searchTerm.trim() !== '') {
+      const search = searchTerm.toLowerCase();
+      filtered = filtered.filter(t => 
+        t.description.toLowerCase().includes(search) ||
+        t.category.toLowerCase().includes(search)
+      );
+    }
+    
+    renderFilteredTransactions(filtered);
   }
   
-  const sortedTransactions = [...transactions].sort((a, b) => b.timestamp - a.timestamp);
+  function renderFilteredTransactions(filtered) {
+    if (filtered.length === 0) {
+      const message = searchTerm.trim() !== '' 
+        ? 'Nenhuma transação encontrada para sua busca' 
+        : 'Nenhuma transação cadastrada';
+      
+      list.innerHTML = `
+        <div class="no-results">
+          <h3>🔍</h3>
+          <p>${message}</p>
+        </div>
+      `;
+      
+      updateFilterSummary(0);
+      return;
+    }
+    
+    const grouped = groupTransactionsByDate(filtered);
+    
+    list.innerHTML = Object.entries(grouped).map(([dateLabel, items]) => `
+      <div class="date-group">
+        <div class="date-group-header">${dateLabel} (${items.length})</div>
+        <div class="date-group-items">
+          ${items.map(t => `
+            <div class="transaction-item ${t.type}">
+              <div class="item-info">
+                <div class="description">${highlightSearchTerm(t.description, searchTerm)}</div>
+                <div class="details">${highlightSearchTerm(t.category, searchTerm)} • ${formatDate(t.date)}</div>
+              </div>
+              <div class="item-amount ${t.type}">
+                ${t.type === 'income' ? '+' : '-'} ${formatCurrency(t.amount)}
+              </div>
+              <div class="item-actions">
+                <button onclick="editTransaction(${t.id})" title="Editar">✏️</button>
+                <button onclick="deleteTransaction(${t.id})" title="Deletar">🗑️</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+    
+    updateFilterSummary(filtered.length);
+  }
   
-  list.innerHTML = sortedTransactions.map(t => `
-    <div class="transaction-item ${t.type}">
-      <div class="item-info">
-        <div class="description">${t.description}</div>
-        <div class="details">${t.category} • ${formatDate(t.date)}</div>
-      </div>
-      <div class="item-amount ${t.type}">
-        ${t.type === 'income' ? '+' : '-'} ${formatCurrency(t.amount)}
-      </div>
-      <div class="item-actions">
-        <button onclick="editTransaction(${t.id})" title="Editar">✏️</button>
-        <button onclick="deleteTransaction(${t.id})" title="Deletar">🗑️</button>
-      </div>
-    </div>
-  `).join('');
+  function updateFilterSummary(count) {
+    let summaryEl = document.querySelector('.filter-summary');
+    
+    if (!summaryEl) {
+      summaryEl = document.createElement('div');
+      summaryEl.className = 'filter-summary';
+      list.parentElement.insertBefore(summaryEl, list);
+    }
+    
+    const filterText = currentFilter === 'all' ? 'todas' : 
+                       currentFilter === 'income' ? 'receitas' : 'despesas';
+    
+    summaryEl.textContent = `Mostrando ${count} ${filterText} ${count !== 1 ? 'transações' : 'transação'}`;
+  }
   
-  console.log('📋 Full history rendered:', transactions.length, 'transactions');
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.addEventListener('input', (e) => {
+      searchTerm = e.target.value;
+      applyFiltersAndRender();
+    });
+  }
+  
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      applyFiltersAndRender();
+    });
+  });
+  
+  applyFiltersAndRender();
+  
+  console.log('📋 Full history rendered with filters');
+}
+
+function resetHistoryFilters() {
+  const searchInput = document.getElementById('search-input');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  
+  if (searchInput) {
+    searchInput.value = '';
+  }
+  
+  filterBtns.forEach(btn => {
+    if (btn.dataset.filter === 'all') {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}
+
+function groupTransactionsByDate(transactions) {
+  const sorted = [...transactions].sort((a, b) => b.timestamp - a.timestamp);
+  const grouped = {};
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  const oneWeekAgo = new Date(today);
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  
+  const oneMonthAgo = new Date(today);
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  
+  sorted.forEach(t => {
+    const transactionDate = new Date(t.date + 'T00:00:00');
+    const transactionDay = new Date(transactionDate.getFullYear(), transactionDate.getMonth(), transactionDate.getDate());
+    
+    let label;
+    
+    if (transactionDay.getTime() === today.getTime()) {
+      label = '📅 Hoje';
+    } else if (transactionDay.getTime() === yesterday.getTime()) {
+      label = '📅 Ontem';
+    } else if (transactionDate >= oneWeekAgo) {
+      label = '📅 Esta Semana';
+    } else if (transactionDate >= oneMonthAgo) {
+      label = '📅 Este Mês';
+    } else {
+      const monthYear = transactionDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+      label = `📅 ${monthYear.charAt(0).toUpperCase() + monthYear.slice(1)}`;
+    }
+    
+    if (!grouped[label]) {
+      grouped[label] = [];
+    }
+    
+    grouped[label].push(t);
+  });
+  
+  return grouped;
+}
+
+function highlightSearchTerm(text, searchTerm) {
+  if (!searchTerm.trim()) return text;
+  
+  const regex = new RegExp(`(${searchTerm})`, 'gi');
+  return text.replace(regex, '<mark style="background-color: #FFEB3B; padding: 2px 4px; border-radius: 3px;">$1</mark>');
 }
 
 function initializeSettings() {
