@@ -850,15 +850,15 @@ function exportAllTransactionsToCSV() {
   
   transactions.forEach(t => {
     const type = t.type === 'income' ? 'Receita' : 'Despesa';
-    const description = t.description.replace(/,/g, ';');
+    const description = t.description.replace(/,/g, ';').replace(/"/g, '""');
     const amount = t.amount.toFixed(2).replace('.', ',');
-    const category = t.category;
-    const date = new Date(t.date).toLocaleDateString('pt-BR');
+    const category = t.category.replace(/,/g, ';').replace(/"/g, '""');
+    const date = new Date(t.date + 'T00:00:00').toLocaleDateString('pt-BR');
     
-    csv += `${type},${description},${amount},${category},${date}\n`;
+    csv += `"${type}","${description}","${amount}","${category}","${date}"\n`;
   });
-  
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+ 
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
   
@@ -1491,15 +1491,15 @@ function exportToCSV() {
   
   filteredTransactions.forEach(t => {
     const type = t.type === 'income' ? 'Receita' : 'Despesa';
-    const description = t.description.replace(/,/g, ';');
+    const description = t.description.replace(/,/g, ';').replace(/"/g, '""');
     const amount = t.amount.toFixed(2).replace('.', ',');
-    const category = t.category;
-    const date = new Date(t.date).toLocaleDateString('pt-BR');
+    const category = t.category.replace(/,/g, ';').replace(/"/g, '""');
+    const date = new Date(t.date + 'T00:00:00').toLocaleDateString('pt-BR');
     
-    csv += `${type},${description},${amount},${category},${date}\n`;
+    csv += `"${type}","${description}","${amount}","${category}","${date}"\n`;
   });
   
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
   

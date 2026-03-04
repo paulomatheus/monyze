@@ -1,4 +1,4 @@
-const CACHE_NAME = 'expenses-v15';
+const CACHE_NAME = 'expenses-v18';
 const urlsToCache = [
   './',
   './index.html',
